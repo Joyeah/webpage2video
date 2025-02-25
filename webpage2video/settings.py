@@ -15,9 +15,10 @@ NEWSPIDER_MODULE = "webpage2video.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "webpage2video (+http://www.yourdomain.com)"
+# USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -62,9 +63,11 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "webpage2video.pipelines.Webpage2VideoPipeline": 300,
-#}
+ITEM_PIPELINES = {
+   "webpage2video.pipelines.Webpage2VideoPipeline": 300,
+   # 'scrapy.pipelines.images.ImagesPipeline': 1,
+   "webpage2video.pipelines.MoviePipeline": 400,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -90,3 +93,14 @@ ROBOTSTXT_OBEY = True
 # Set settings whose default value is deprecated to a future-proof value
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+# My Image download settings
+IMAGES_STORE = 'download'
+IMAGES_MIN_HEIGHT = 100  # 忽略高度小于100px的图片
+IMAGES_MIN_WIDTH = 100   # 忽略宽度小于100px的图片
+# 可选：设置图片下载的并发请求数
+CONCURRENT_REQUESTS = 16
+# 可选：设置图片下载延迟（避免被封禁）
+DOWNLOAD_DELAY = 1
+# days of delay for images expiration
+IMAGES_EXPIRES = 2

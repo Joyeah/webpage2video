@@ -6,12 +6,16 @@ extract picture and text , convert to a video
 3. count mp3 duration
 4. merge text and picture to a video
 
+## webpage structure need:
+1. title
+2. summary (or null)
+3. img and comment
+
 ## dependencies
 - scrapy (for download webpage and extract text, picture)
 - pyttsx3 (for text to mp3)
 - mutagen (for count mp3 duration)
 - ffmpeg-python （ ffmpeg wrapper)
-
 
 ## count mp3 duraion
 使用 mutagen 库直接读取音频文件的元信息（如时长）
@@ -27,3 +31,4 @@ file_path = "your_audio_file.mp3"
 duration = get_audio_duration(file_path)
 print(f"音频时长: {duration:.2f} 秒")
 ```
+## 合并音频和视频
