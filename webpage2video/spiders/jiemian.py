@@ -2,8 +2,11 @@ import scrapy
 from scrapy.utils.url import parse_url
 from webpage2video.items import ArticleItem
 
-# 文章索引页：界面影像 https://www.jiemian.com/lists/134.html
 class JiemainSpider(scrapy.Spider):
+    '''
+    文章索引页：界面影像 https://www.jiemian.com/lists/134.html
+    version: 0.1
+    '''
     name = "jiemain"
     # must be set all url host here !!!!important!!!!
     # allowed_domains = ["127.0.0.1:8080", "www.jiemian.com", "img1.jiemian.com", "img2.jiemian.com", "img3.jiemian.com", "img4.jiemian.com"]

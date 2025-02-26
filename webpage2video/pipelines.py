@@ -5,15 +5,12 @@
 
 
 # useful for handling different item types with a single interface
-from email.mime import base
 import os
 import re
-from PIL import Image
 from itemadapter import ItemAdapter
 from moviepy import AudioFileClip, ImageClip, concatenate_videoclips
 from scrapy.pipelines.images import ImagesPipeline
 import scrapy
-from scrapy.exceptions import DropItem
 from pathlib import PurePosixPath
 import scrapy.utils
 from scrapy.utils.httpobj import urlparse_cached
@@ -23,6 +20,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Webpage2VideoPipeline(ImagesPipeline):
+    '''
+    抓取网页中的图处与对应的文本内容
+    version: 1.0
+    '''
     # def process_item(self, item, spider):
     #     print(ItemAdapter(item).asdict())
     #     return item
@@ -94,6 +95,10 @@ class Webpage2VideoPipeline(ImagesPipeline):
         
     
 class MoviePipeline:
+    '''
+    将文字转换为音频文件，并与图片合并为视频文件片断；进而合并为整个视频文件
+    verison: 1.0
+    '''
     def process_item(self, item, spider):
         """
         TODO TTS and Convert to MP4
@@ -134,65 +139,65 @@ class MoviePipeline:
         return item
         
 
-    def gen_video(self, item, spider, basedir, summary_audio, mp3paths):
-        """生成音频及视频文件
+    # def gen_video(self, item, spider, basedir, summary_audio, mp3paths):
+    #     """生成音频及视频文件
 
-        Args:
-            item (_type_): _description_
-            spider (_type_): _description_
-            basedir (_type_): _description_
-            summary_audio (_type_): _description_
-            mp3paths (_type_): _description_
+    #     Args:
+    #         item (_type_): _description_
+    #         spider (_type_): _description_
+    #         basedir (_type_): _description_
+    #         summary_audio (_type_): _description_
+    #         mp3paths (_type_): _description_
 
-        Returns:
-            _type_: _description_
-        Deprecated:
-            write_videofile()非常慢
+    #     Returns:
+    #         _type_: _description_
+    #     Deprecated:
+    #         write_videofile()非常慢
 
-        """
-        # step2: 生成视频文件
-        # 创建一个空列表存储视频片段
-        video_clips = []
-        # 片头summary
-        first_imagepath = item['image_urls'][0].split('/')[-1]
-        first_imagepath = first_imagepath.split('.')[0]
-        summary_image = os.path.join(basedir, first_imagepath)  # 获取第一张
-        summary_clip = self.makeVideoClip(summary_image, summary_audio)
-        video_clips.append(summary_clip)
+    #     """
+    #     # step2: 生成视频文件
+    #     # 创建一个空列表存储视频片段
+    #     video_clips = []
+    #     # 片头summary
+    #     first_imagepath = item['image_urls'][0].split('/')[-1]
+    #     first_imagepath = first_imagepath.split('.')[0]
+    #     summary_image = os.path.join(basedir, first_imagepath)  # 获取第一张
+    #     summary_clip = self.makeVideoClip(summary_image, summary_audio)
+    #     video_clips.append(summary_clip)
 
-        # 合并图片音频文件到视频文件MP4
-        # for image_path, mp3path in zip(item['image_paths'], mp3paths):
-        for image_path, mp3path in zip(item['image_urls'], mp3paths):
-            image_path = os.path.join(basedir, image_path.split('/')[-1])
-            video_clip = self.makeVideoClip(image_path, mp3path)
-            video_clips.append(video_clip)
+    #     # 合并图片音频文件到视频文件MP4
+    #     # for image_path, mp3path in zip(item['image_paths'], mp3paths):
+    #     for image_path, mp3path in zip(item['image_urls'], mp3paths):
+    #         image_path = os.path.join(basedir, image_path.split('/')[-1])
+    #         video_clip = self.makeVideoClip(image_path, mp3path)
+    #         video_clips.append(video_clip)
 
         
-        # 将所有视频片段合并成一个视频
-        final_video = concatenate_videoclips(video_clips, method='compose')  #.resize((1920, 1080)).set_position(('center','center'))
-        # 保存合并后的视频到本地
-        video_fname = item['filename'] or re.sub(r'[\W\s]', '', item['title'])
-        # final_video.write_videofile(f'{basedir}/{video_fname}.mp4', fps=24, codec='mpeg4', bitrate='1000k')
-        # final_video.write_videofile(f'{basedir}/{video_fname}.mp4', fps=24, preset='ultrafast', audio_codec='aac', audio_bitrate='192k')
-        final_video.write_videofile(f'{basedir}/{video_fname}.mp4', fps=15, codec="libx264", preset="ultrafast", threads=8)
-        logger.info('Media Pipeline::process_item:: Convert to mp4 Done')
-        # return item
+    #     # 将所有视频片段合并成一个视频
+    #     final_video = concatenate_videoclips(video_clips, method='compose')  #.resize((1920, 1080)).set_position(('center','center'))
+    #     # 保存合并后的视频到本地
+    #     video_fname = item['filename'] or re.sub(r'[\W\s]', '', item['title'])
+    #     # final_video.write_videofile(f'{basedir}/{video_fname}.mp4', fps=24, codec='mpeg4', bitrate='1000k')
+    #     # final_video.write_videofile(f'{basedir}/{video_fname}.mp4', fps=24, preset='ultrafast', audio_codec='aac', audio_bitrate='192k')
+    #     final_video.write_videofile(f'{basedir}/{video_fname}.mp4', fps=15, codec="libx264", preset="ultrafast", threads=8)
+    #     logger.info('Media Pipeline::process_item:: Convert to mp4 Done')
+    #     # return item
         
 
-    def makeVideoClip(self, image_path, mp3path):
-        # 获得音频文件的时长
-        audio_clip = AudioFileClip(mp3path)
-        audio_duration = audio_clip.duration
+    # def makeVideoClip(self, image_path, mp3path):
+    #     # 获得音频文件的时长
+    #     audio_clip = AudioFileClip(mp3path)
+    #     audio_duration = audio_clip.duration
 
-        # 创建图片视频片断对象
-        image_clip = ImageClip(image_path, duration=audio_duration)
-        image_clip.fadein(0.5)
+    #     # 创建图片视频片断对象
+    #     image_clip = ImageClip(image_path, duration=audio_duration)
+    #     image_clip.fadein(0.5)
 
-        image_clip = image_clip.resized(width=1280)
-        # 将图片和音频合成一个视频，并保存为mp4格式
-        video_clip = image_clip.with_audio(audio_clip)
+    #     image_clip = image_clip.resized(width=1280)
+    #     # 将图片和音频合成一个视频，并保存为mp4格式
+    #     video_clip = image_clip.with_audio(audio_clip)
         
-        return video_clip
+    #     return video_clip
     
     def gen_video2(self, item, spider, basedir, mp3paths):
         """生成音频及视频文件,采用ffmepg生成单图片视频,再合并
@@ -204,26 +209,40 @@ class MoviePipeline:
         if 'summary' in item and item['summary']:
             summary_audio = f'{basedir}/{item["filename"]}_summary.mp3'
             first_imagepath = item['image_urls'][0].split('/')[-1]
-            first_imagepath = first_imagepath.split('.')[0]
             summary_image = os.path.join(basedir, first_imagepath)  # 获取第一张
-            summary_clip = self.makeVideoClip2(summary_image, summary_audio)
-            video_clips.append(summary_clip)
+            summary_video_path = f'{basedir}/{item["filename"]}_summary.mp4'
+            if not os.path.exists(summary_video_path):
+                self.makeVideoClip2(summary_image, summary_audio, summary_video_path)
+                video_clips.append(summary_video_path)
         
         # 合并图片音频文件到视频文件MP4
-        for image_path, mp3path in zip(item['image_urls'], mp3paths):
+        # for image_path, mp3path in zip(item['image_urls'], mp3paths):
+        for i, mp3path in enumerate(mp3paths):
+            image_path = item['image_urls'][i]
             image_path = os.path.join(basedir, image_path.split('/')[-1])
             if os.path.exists(image_path):
-                video_clip = self.makeVideoClip2(image_path, mp3path)
-                video_clips.append(video_clip)
+                print(f'[MAKING MP4] IDX:{i} {mp3path} {image_path}')
+                try:
+                    fname = image_path.rstrip(image_path.split('.')[-1])  # 避免文件名中有.的情况
+                    video_clip = f'{fname}mp4'
+                    if not os.path.exists(video_clip):
+                        self.makeVideoClip2(image_path, mp3path, video_clip)
+                    video_clips.append(video_clip)
+                except Exception as e:
+                    logger.error(f'Media Pipeline::makeVideoClip2:: {e}')
+                    
 
         # 创建一个列表存储视频片段
         clip_list = f'{basedir}/{item['filename']}_list.txt'
-        with open(clip_list, 'w') as f:
+        with open(clip_list, 'w', encoding='utf8') as f:
             for vid in video_clips:
-                f.write("file '%s'\n" % vid.split(os.path.sep)[-1])
+                if os.path.exists(vid):
+                    f.write("file '%s'\n" % vid.split(os.path.sep)[-1])
+                else:
+                    logger.error(f'{vid} NOT EXISTS!!!')
 
         # 将所有视频片段合并成一个视频
-        self.merge_video_clips(item, spider, basedir)
+        self.merge_video_clips(clip_list, basedir, item['filename'])
         logger.info('Media Pipeline::gen_video2:: Convert to mp4 Done')
         
         # 删除临时文件
@@ -237,7 +256,7 @@ class MoviePipeline:
 
 
 
-    def makeVideoClip2(self, image_path, mp3path):
+    def makeVideoClip2(self, image_path, mp3path, out_filepath=None):
         """
         用ffmepg生成单图片视频
         ffmpeg -loop 1 -i 1.jpg -i 1.mp3 -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2" -c:v libx264 -c:a aac -t 10 -pix_fmt yuv420p -y 1.mp4
@@ -250,21 +269,18 @@ class MoviePipeline:
         audio_duration = audio_clip.duration
         audio_clip.close()
 
-        video_clip_path = image_path.split('.')[0] + '.mp4'
-        if os.path.exists(video_clip_path):
-            return video_clip_path
-
         command = [
             'ffmpeg', '-loop', '1', '-i', image_path, '-i', mp3path,
-            '-vf', f'scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fade=t=in:st=0:d=1,fade=t=out:st={audio_duration-1}:d=1',
-            '-c:v', 'libx264', '-c:a', 'aac', '-t', str(audio_duration), '-pix_fmt', 'yuv420p', '-y', video_clip_path
+            '-vf', f'scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fade=t=in:st=0:d=0.5,fade=t=out:st={audio_duration-1}:d=0.5',
+            '-c:v', 'libx264', '-c:a', 'aac', '-t', str(audio_duration), '-pix_fmt', 'yuv420p', '-y', out_filepath
 
         ]
+        print(' '.join(command))
         subprocess.run(command)
         logger.info('Media Pipeline::makeVideoClip2:: Make Video clip Done')
-        return video_clip_path
+        # return video_clip_path
 
-    def merge_video_clips(self, item, spider, basedir):
+    def merge_video_clips(self, clip_list, basedir, out_filename):
         """
         合并多个视频片段，并保存为一个新的视频文件。
         ffmpeg -f concat -safe 0 -i list.txt -c copy output.mp4
@@ -276,9 +292,8 @@ class MoviePipeline:
         Returns:
             None
         """
-        clip_list = f'{basedir}/{item['filename']}_list.txt'
-        title = item['filename'] or re.sub(r'[\W\s]', '', item['title'])
-        output = os.path.join(basedir, f'{title}_total' + '.mp4')
+        clip_list = f'{basedir}/{out_filename}_list.txt'
+        output = os.path.join(basedir, f'{out_filename}_total' + '.mp4')
         command = [
             'ffmpeg', '-f', 'concat', '-safe', '0', '-i', clip_list, '-c', 'copy', '-y', output
         ]
@@ -288,7 +303,7 @@ class MoviePipeline:
         # 添加背景音乐
         # ffmpeg -i 1.mp4 -stream_loop -1 -i background.mp3 -filter_complex "[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[audio]" -map 0:v:0 -map "[audio]" -c:v copy -shortest -y 1-mu.mp4
         # ffmpeg -i download/图集水培蔬菜在海上种地未来农业能否喂饱所有人_total.mp4 -stream_loop -1 -i background.mp3 -filter_complex "[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[audio]" -map 0:v:0 -map "[audio]" -c:v copy -c:a aac -shortest -y download\图集水培蔬菜在海上种地未来农业能否喂饱所有人_music.mp4
-        music_video = os.path.join(basedir, f'{title}_music' + '.mp4')
+        music_video = os.path.join(basedir, f'{out_filename}_music' + '.mp4')
         # music_video = f'{basedir}/{title}_music' + '.mp4'
         command = [
             'ffmpeg', '-i', output, '-stream_loop', '-1','-i', 'background.mp3', '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[audio]', '-map', '0:v:0', '-map', '[audio]','-c:v', 'copy', '-c:a', 'aac', '-shortest', '-y', music_video

@@ -6,6 +6,10 @@ from webpage2video.items import ArticleItem
 
 
 class MsnnewsSpider(scrapy.Spider):
+    '''
+    MSN新闻爬虫, use json data
+    version: 0.1
+    '''
     name = "msnnews"
     allowed_domains = ["www.msn.cn", "assets.msn.cn", "img-s.msn.cn"]
     # start_urls = ["https://www.msn.cn/zh-cn"]  
@@ -25,7 +29,7 @@ class MsnnewsSpider(scrapy.Spider):
     #         yield scrapy.Request(url, headers=default_headers, callback=self.parse)
 
     def parse(self, response):
-        '''https://assets.msn.cn/service/news/feed/pages/channelfeed'''
+        '''https://assets.msn.cn/service/news/feed/pages/channelfeed...'''
         with open('cache/channelfeed.json', 'wb') as f:
             f.write(response.body)
 

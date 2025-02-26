@@ -13,9 +13,12 @@ extract picture and text , convert to a video
 
 ## dependencies
 - scrapy (for download webpage and extract text, picture)
-- pyttsx3 (for text to mp3)
 - mutagen (for count mp3 duration)
-- ffmpeg-python （ ffmpeg wrapper)
+- ~~ffmpeg-python （ ffmpeg wrapper)~~
+- pyttsx3 (for text to mp3)
+- moviepy (for merge audio and video)
+- ffmpeg (for merge audio and video) [ffmpeg.exe must be in PATH]
+
 
 ## count mp3 duraion
 使用 mutagen 库直接读取音频文件的元信息（如时长）
