@@ -49,7 +49,7 @@ class MsnnewsSpider(scrapy.Spider):
                         texts.append(abstract)
                 
         article = ArticleItem()
-        article['title'] = f'MSN新闻{datetime.now().strftime("%Y%m%d")}'
+        article['title'] = article['filename'] = f'MSN新闻{datetime.now().strftime("%Y%m%d")}'
         article['image_urls'] = img_urls
         article['paragraphs'] = texts
 

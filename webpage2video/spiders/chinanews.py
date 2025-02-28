@@ -1,3 +1,4 @@
+from datetime import datetime
 import scrapy
 from scrapy.utils.url import parse_url
 
@@ -57,7 +58,8 @@ class ChinanewsSpider(scrapy.Spider):
 
         
         article = ArticleItem()
-        article['title'] = '中国新闻网图片'
+        article['filename'] = f'chinanews_photo{datetime.now().strftime("%Y%m%d")}'
+        article['title'] = f'中国新闻网图片{datetime.now().strftime("%Y%m%d")}'
         article['summary'] = '中国新闻网图片摘要'
         article['paragraphs'] = texts
         article['image_urls'] = img_urls
@@ -79,7 +81,7 @@ class ChinanewsSpider(scrapy.Spider):
             text = href.xpath("string(.)").get().strip()
             img_src = href.css('img::attr(src)').get()
             if text and img_src:
-                if len(text) < 5 or img_src.endswith('ghs.png'):
+                if len(text) < 8 or img_src.endswith('ghs.png'):
                     continue
                 print(text, img_src)
                 texts.append(text)

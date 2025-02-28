@@ -1,10 +1,13 @@
+from datetime import datetime
 import scrapy
 from scrapy.utils.url import parse_url
 from webpage2video.items import ArticleItem
 
 class JiemainSpider(scrapy.Spider):
     '''
+    界面影像详情页解析
     文章索引页：界面影像 https://www.jiemian.com/lists/134.html
+    缺点：内容更新很慢
     version: 0.1
     '''
     name = "jiemain"
@@ -57,7 +60,7 @@ class JiemainSpider(scrapy.Spider):
             
             
         article = ArticleItem()
-        article['title'] = title or 'notitle'
+        article['title'] = article['filename'] = f'{title}{datetime.now().strftime("%Y%m%d")}' or f'界面影像{datetime.now().strftime("%Y%m%d")}'
         article['summary'] = summary
         article['paragraphs'] = texts
         article['image_urls'] = imgs

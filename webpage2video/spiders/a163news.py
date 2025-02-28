@@ -16,20 +16,24 @@ class A163newsSpider(scrapy.Spider):
     name = "163news"
     # allowed_domains = ["news.163.com", "nimg.ws.126.net"]
     start_urls = ["https://news.163.com/"]
-    # 要闻：通过二次请求，回调填充
+    start_urls = ["http://127.0.0.1:8080/data_callback.json"]
+
+    # 要闻：通过二次请求，回调填充的地址，直接解析json数据
     start_urls = [
-        # "http://127.0.0.1:8080/data_callback.json"
-        # "https://news.163.com/special/cm_yaowen20200213/?callback=data_callback",
+        "https://news.163.com/special/cm_yaowen20200213/?callback=data_callback",
         "https://tech.163.com/special/00097UHL/tech_datalist.js?callback=data_callback",
-        # "https://news.163.com/special/cm_guoji/?callback=data_callback"
+        "https://news.163.com/special/cm_guoji/?callback=data_callback"
     ]
 
     def parse(self, response):
         '''
         不请求首页，直接的二次请求
-        https://news.163.com/special/cm_yaowen20200213/?callback=data_callback'''
-        # with open("cache/163news.html", "wb") as f:
-        #     f.write(response.body)
+        https://news.163.com/special/cm_yaowen20200213/?callback=data_callback
+        '''
+        parsed_url = parse_url(response.url)
+        cache_file = parsed_url.path.strip('/').split('/')[-1]
+        with open(f"cache/163news{cache_file}.html", "wb") as f:
+            f.write(response.body)
         
         # 中间新闻要闻：mid_main[0]，二次请求，回调填充
         # for item in response.xpath('//div[@class="mid_main"]'):
@@ -73,7 +77,8 @@ class A163newsSpider(scrapy.Spider):
             channelname = '国际'
     
         article = ArticleItem()
-        article['title'] = f'news163{channelname}{datetime.now().strftime("%Y%m%d")}'
+        article['title'] = f'网易新闻{channelname}{datetime.now().strftime("%Y%m%d")}'
+        article['filename'] = f'news163{channelname}{datetime.now().strftime("%Y%m%d")}'
         article['summary'] = ''
         article['paragraphs'] = texts
         article['image_urls'] = img_urls

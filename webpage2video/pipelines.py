@@ -39,8 +39,12 @@ class Webpage2VideoPipeline(ImagesPipeline):
         out = self.store.basedir
         # 标题与简介
         title = item['title']
-        filename = re.sub(r'[\W\s]', '', title)
-        item['filename'] = filename
+        if 'filename' not in item:
+            filename = re.sub(r'[\W\s]', '', title)
+            item['filename'] = filename
+        else:
+            filename = item['filename']
+
         if 'summary' in item and 'summary' in item:
             summary = item['summary'] or ''
             with open(f'{out}/{filename}_summary.txt', 'w', encoding='utf-8') as f:
@@ -135,6 +139,13 @@ class MoviePipeline:
         logger.info('Media Pipeline::process_item:: Convert to mp3 Done')
 
         self.gen_video2(item, spider, basedir, mp3paths)
+
+        # 删除mp3文件
+        for mp3path in mp3paths:
+            try:
+                os.remove(mp3path)
+            except Exception as e:
+                logger.error(e)
 
         return item
         
