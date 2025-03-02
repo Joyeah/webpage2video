@@ -15,8 +15,7 @@ class MsnnewsSpider(scrapy.Spider):
     # start_urls = ["https://www.msn.cn/zh-cn"]  
     # start_urls = ["https://assets.msn.cn/resolver/api/resolve/v3/config/?expType=AppConfig&expInstance=default&apptype=windows&v=20250224.570&targetScope={%22audienceMode%22:%22adult%22,%22browser%22:{%22browserType%22:%22edgeChromium%22,%22version%22:%22133%22,%22ismobile%22:%22false%22},%22deviceFormFactor%22:%22desktop%22,%22domain%22:%22www.msn.cn%22,%22locale%22:{%22content%22:{%22language%22:%22zh%22,%22market%22:%22cn%22},%22display%22:{%22language%22:%22zh%22,%22market%22:%22cn%22}},%22ocid%22:%22widgetonlockscreen%22,%22os%22:%22windows%22,%22platform%22:%22web%22,%22pageType%22:%22windowshp%22,%22pageExperiments%22:[%22prg-ch-lsbtwk1%22,%22prg-msn-blsbidmho%22,%22prg-pr2-dis-signal%22,%22prg-update-hide-hrt%22]}"] # config json数据
     start_urls = ["https://assets.msn.cn/service/news/feed/pages/channelfeed?InterestIds=Y_77f04c37-b63e-46b4-a990-e926f7d129ff&activityId=2016E08B-3D23-4A19-99AC-2762CCB659C5&apikey=0QfOX3Vn51YCzitbLaRkTTBadtWpgTN8NZLW0C1SEM&cm=zh-cn&it=edgeid&memory=8&ocid=social-peregrine&scn=APP_ANON&timeOut=2000&user=m-1F779C3596076411290F88DE978D65A3"] # 新闻列表json数据
-    # start_urls = ["http://127.0.0.1:8080/channelfeed.json"]
-    # def start_requests(self):
+    # start_urls = ["http://127.0.0.1:8080/channelfeed.json"]    # def start_requests(self):
     #     default_headers = {
     #         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     #         'Accept-Encoding': 'gzip, deflate, sdch, br',

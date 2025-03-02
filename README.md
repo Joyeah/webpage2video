@@ -12,12 +12,12 @@ extract picture and text , convert to a video
 3. img and comment
 
 ## dependencies
+- ffmpeg (for merge audio and video) [ffmpeg.exe must be in PATH]
+- ~~ffmpeg-python （ ffmpeg wrapper)~~
 - scrapy (for download webpage and extract text, picture)
 - mutagen (for count mp3 duration)
-- ~~ffmpeg-python （ ffmpeg wrapper)~~
 - pyttsx3 (for text to mp3)
-- moviepy (for merge audio and video)
-- ffmpeg (for merge audio and video) [ffmpeg.exe must be in PATH]
+- ~~moviepy (for merge audio and video)~~
 
 
 ## count mp3 duraion
@@ -35,3 +35,14 @@ duration = get_audio_duration(file_path)
 print(f"音频时长: {duration:.2f} 秒")
 ```
 ## 合并音频和视频
+moviepy库效率较慢，改用 ffmpeg 命令行工具
+
+## run
+```shell
+py run_all_spider.py
+```
+or
+```shell
+scrapy crawl <spider_name>
+```
+

@@ -118,7 +118,8 @@ class MoviePipeline:
         if 'summary' in item and item['summary']:
             summary_audio = f'{basedir}/{item["filename"]}_summary.mp3'
             engine.save_to_file(item['summary'], summary_audio)
-
+            engine.runAndWait()
+            
         # 遍历文字
         for i in range(len(item['paragraphs'])):
             paragraph = item['paragraphs'][i]
@@ -133,8 +134,8 @@ class MoviePipeline:
             if not os.path.exists(mp3file):
                 logger.info(f'Convert text to MP3: {mp3file}')
                 engine.save_to_file(paragraph, mp3file)
+                engine.runAndWait()
             mp3paths.append(mp3file)
-            engine.runAndWait()
         
         logger.info('Media Pipeline::process_item:: Convert to mp3 Done')
 
