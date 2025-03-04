@@ -10,7 +10,7 @@ class JiemainSpider(scrapy.Spider):
     缺点：内容更新很慢
     version: 0.1
     '''
-    name = "jiemain"
+    name = "jiemain_detail"
     # must be set all url host here !!!!important!!!!
     # allowed_domains = ["127.0.0.1:8080", "www.jiemian.com", "img1.jiemian.com", "img2.jiemian.com", "img3.jiemian.com", "img4.jiemian.com"]
     start_urls = ["https://www.jiemian.com/article/10593988.html"]

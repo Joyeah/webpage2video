@@ -138,7 +138,10 @@ class MoviePipeline:
             mp3paths.append(mp3file)
         
         logger.info('Media Pipeline::process_item:: Convert to mp3 Done')
-
+        if len(mp3paths) == 0:
+            logger.error('No mp3 file to convert')
+            return item
+        
         self.gen_video2(item, spider, basedir, mp3paths)
 
         # 删除mp3文件
