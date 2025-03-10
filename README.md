@@ -1,5 +1,5 @@
 # webpage2video
-extract picture and text , convert to a video
+extract picture and text from webpage and convert to a video
 
 1. download pictures and text from a webpage
 2. convert text to mp3
@@ -41,7 +41,7 @@ moviepy库效率较慢，改用 ffmpeg 命令行工具
 ```shell
 py run_all_spider.py
 ```
-or
+or run a single spider:
 ```shell
 scrapy crawl <spider_name>
 ```

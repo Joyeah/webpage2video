@@ -103,6 +103,10 @@ class MoviePipeline:
     将文字转换为音频文件，并与图片合并为视频文件片断；进而合并为整个视频文件
     verison: 1.0
     '''
+    def __init__(self):
+        os.makedirs('./out', exist_ok=True)
+        self.outdir = './out'
+
     def process_item(self, item, spider):
         """
         TODO TTS and Convert to MP4
@@ -308,7 +312,7 @@ class MoviePipeline:
             None
         """
         clip_list = f'{basedir}/{out_filename}_list.txt'
-        output = os.path.join(basedir, f'{out_filename}_total' + '.mp4')
+        output = os.path.join(self.outdir, f'{out_filename}_total' + '.mp4')
         command = [
             'ffmpeg', '-f', 'concat', '-safe', '0', '-i', clip_list, '-c', 'copy', '-y', output
         ]
@@ -318,7 +322,7 @@ class MoviePipeline:
         # 添加背景音乐
         # ffmpeg -i 1.mp4 -stream_loop -1 -i background.mp3 -filter_complex "[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[audio]" -map 0:v:0 -map "[audio]" -c:v copy -shortest -y 1-mu.mp4
         # ffmpeg -i download/图集水培蔬菜在海上种地未来农业能否喂饱所有人_total.mp4 -stream_loop -1 -i background.mp3 -filter_complex "[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[audio]" -map 0:v:0 -map "[audio]" -c:v copy -c:a aac -shortest -y download\图集水培蔬菜在海上种地未来农业能否喂饱所有人_music.mp4
-        music_video = os.path.join(basedir, f'{out_filename}_music' + '.mp4')
+        music_video = os.path.join(self.outdir, f'{out_filename}_music' + '.mp4')
         # music_video = f'{basedir}/{title}_music' + '.mp4'
         command = [
             'ffmpeg', '-i', output, '-stream_loop', '-1','-i', 'background.mp3', '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first:dropout_transition=3[audio]', '-map', '0:v:0', '-map', '[audio]','-c:v', 'copy', '-c:a', 'aac', '-shortest', '-y', music_video
