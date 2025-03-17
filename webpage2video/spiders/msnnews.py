@@ -2,15 +2,16 @@ from datetime import datetime
 import json
 import scrapy
 
+
 from webpage2video.items import ArticleItem
 
 
-class MsnnewsSpider(scrapy.Spider):
+class MsnnewsChannelSpider(scrapy.Spider):
     '''
     MSN新闻爬虫, use json data
     version: 0.1
     '''
-    name = "msnnews"
+    name = "msnnews_channel"
     allowed_domains = ["www.msn.cn", "assets.msn.cn", "img-s.msn.cn"]
     # start_urls = ["https://www.msn.cn/zh-cn"]  
     # start_urls = ["https://assets.msn.cn/resolver/api/resolve/v3/config/?expType=AppConfig&expInstance=default&apptype=windows&v=20250224.570&targetScope={%22audienceMode%22:%22adult%22,%22browser%22:{%22browserType%22:%22edgeChromium%22,%22version%22:%22133%22,%22ismobile%22:%22false%22},%22deviceFormFactor%22:%22desktop%22,%22domain%22:%22www.msn.cn%22,%22locale%22:{%22content%22:{%22language%22:%22zh%22,%22market%22:%22cn%22},%22display%22:{%22language%22:%22zh%22,%22market%22:%22cn%22}},%22ocid%22:%22widgetonlockscreen%22,%22os%22:%22windows%22,%22platform%22:%22web%22,%22pageType%22:%22windowshp%22,%22pageExperiments%22:[%22prg-ch-lsbtwk1%22,%22prg-msn-blsbidmho%22,%22prg-pr2-dis-signal%22,%22prg-update-hide-hrt%22]}"] # config json数据
@@ -26,6 +27,7 @@ class MsnnewsSpider(scrapy.Spider):
     #     }
     #     for url in self.start_urls:
     #         yield scrapy.Request(url, headers=default_headers, callback=self.parse)
+
 
     def parse(self, response):
         '''https://assets.msn.cn/service/news/feed/pages/channelfeed...'''
@@ -48,13 +50,13 @@ class MsnnewsSpider(scrapy.Spider):
                         texts.append(abstract)
                 
         article = ArticleItem()
-        article['title'] = article['filename'] = f'MSN新闻{datetime.now().strftime("%Y%m%d")}'
+        article['title'] = f'MSN新闻{datetime.now().strftime("%Y%m%d")}'
+        article['filename'] = f'{datetime.now().strftime("%Y%m%d")}MSN新闻'
         article['image_urls'] = img_urls
         article['paragraphs'] = texts
 
         yield article
         
-
 
 
 

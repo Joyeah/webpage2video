@@ -58,7 +58,7 @@ class ChinanewsSpider(scrapy.Spider):
 
         
         article = ArticleItem()
-        article['filename'] = f'chinanews_photo{datetime.now().strftime("%Y%m%d")}'
+        article['filename'] = f'{datetime.now().strftime("%Y%m%d")}chinanews_photo'
         article['title'] = f'中国新闻网图片{datetime.now().strftime("%Y%m%d")}'
         article['summary'] = '中国新闻网图片摘要'
         article['paragraphs'] = texts

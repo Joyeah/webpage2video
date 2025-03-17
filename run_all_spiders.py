@@ -6,6 +6,9 @@ def run_all_spiders():
 
     # 列出所有爬虫并运行
     for spider_name in process.spider_loader.list():
+        # 忽略jiemain_detail，msnnews_page
+        if spider_name == 'jiemian_detail' or spider_name == 'msnnews_page':
+            continue
         process.crawl(spider_name)
 
     process.start()  # 脚本会在这里阻塞，直到所有爬虫完成

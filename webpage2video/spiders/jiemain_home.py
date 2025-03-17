@@ -8,7 +8,7 @@ class JiemainHomeSpider(scrapy.Spider):
     name = "jiemain_home"
     # allowed_domains = ["www.jiemian.com"]
     start_urls = ["https://www.jiemian.com/"]
-    start_urls = ["http://127.0.0.1:8080/jiemian.html"]
+    # start_urls = ["http://127.0.0.1:8080/jiemian.html"]
 
     def parse(self, response):
         imgs = []
@@ -42,7 +42,7 @@ class JiemainHomeSpider(scrapy.Spider):
                 texts.append(text)
             
         article = ArticleItem()
-        article['title'] = article['filename'] = f'界面新闻{datetime.now().strftime("%Y%m%d")}'
+        article['title'] = article['filename'] = f'{datetime.now().strftime("%Y%m%d")}界面新闻'
         article['summary'] = ''
         article['image_urls'] = imgs
         article['paragraphs'] = texts

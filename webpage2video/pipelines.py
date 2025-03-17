@@ -68,10 +68,10 @@ class Webpage2VideoPipeline(ImagesPipeline):
             image_path = os.path.join(self.store.basedir, imgfilename)
             if os.path.exists(image_path):
                 continue
-            # parsed_url = scrapy.utils.url.parse_url(image_url)
-            # self.default_headers['Referer'] = f'{parsed_url.scheme}//{parsed_url.netloc}/' #'https://www.jiemian.com'
-            # yield scrapy.Request(image_url, headers=self.default_headers)
-            yield scrapy.Request(image_url)
+            parsed_url = scrapy.utils.url.parse_url(image_url)
+            self.default_headers['Referer'] = f'{parsed_url.scheme}//{parsed_url.netloc}/' #'https://www.jiemian.com'
+            yield scrapy.Request(image_url, headers=self.default_headers)
+            # yield scrapy.Request(image_url)
 
             
 
@@ -87,6 +87,8 @@ class Webpage2VideoPipeline(ImagesPipeline):
         
         # 保存图片对应的文字
         out = self.store.basedir
+        # if len(item['paragraphs']) < len(item['image_urls']):
+        #     raise DropItem("Item contains no enough paragraphs")
         for i in range(len(item['image_urls'])):
             text = item['paragraphs'][i]
             imgfilefullname = item['image_urls'][i].split('/')[-1]

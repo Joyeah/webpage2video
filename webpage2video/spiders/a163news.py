@@ -78,7 +78,7 @@ class A163newsSpider(scrapy.Spider):
     
         article = ArticleItem()
         article['title'] = f'网易新闻{channelname}{datetime.now().strftime("%Y%m%d")}'
-        article['filename'] = f'news163{channelname}{datetime.now().strftime("%Y%m%d")}'
+        article['filename'] = f'{datetime.now().strftime("%Y%m%d")}news163{channelname}'
         article['summary'] = ''
         article['paragraphs'] = texts
         article['image_urls'] = img_urls
